@@ -1,7 +1,7 @@
 #!/bin/bash
 set -o nounset -o errexit -o pipefail
 
-APP_ENV="${APP_ENV:-undefined}"
+APP_ENV="${APP_ENV:-unknown}"
 base_name="$(basename "$0")"
 case "$base_name" in
   task-*) APP_ENV="${base_name#task-}" ;;
