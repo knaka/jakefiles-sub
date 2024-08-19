@@ -15,6 +15,27 @@ if (! process.env.APP_ENV) {
     process.env.APP_ENV = "undefined";
 }
 
+switch (process.env.APP_SENV || process.env.APP_ENV) {
+    case "dev":
+    case "development":
+        process.env.APP_ENV = "development";
+        process.env.APP_SENV = "dev";
+        break;
+    case "stg":
+    case "staging":
+        process.env.APP_ENV = "staging";
+        process.env.APP_SENV = "stg";
+        break;
+    case "prd":
+    case "production":
+        process.env.APP_ENV = "production";
+        process.env.APP_SENV = "prd";
+        break;
+    default:
+        process.env.APP_SENV = process.env.APP_ENV = (process.env.APP_SENV || process.env.APP_ENV);
+        break;
+}
+
 const tasks = process.argv.slice(2);
 
 // Ensure that `npm install` has been run.
