@@ -18,18 +18,18 @@ if (! process.env.APP_ENV) {
 switch (process.env.APP_SENV || process.env.APP_ENV) {
     case "dev":
     case "development":
-        process.env.APP_ENV = "development";
         process.env.APP_SENV = "dev";
+        process.env.APP_ENV = "development";
         break;
     case "stg":
     case "staging":
-        process.env.APP_ENV = "staging";
         process.env.APP_SENV = "stg";
+        process.env.APP_ENV = "staging";
         break;
     case "prd":
     case "production":
-        process.env.APP_ENV = "production";
         process.env.APP_SENV = "prd";
+        process.env.APP_ENV = "production";
         break;
     default:
         process.env.APP_SENV = process.env.APP_ENV = (process.env.APP_SENV || process.env.APP_ENV);
@@ -61,7 +61,7 @@ process.exit(await new Promise(resolve =>
     spawn("npx", [
         "jake",
         ...quiet_options,
-        "--jakefile", join("jakelib", "scr", "bootstrap.cjs"),
+        "--jakefile", join("jakelib", "sub", "bootstrap.cjs"),
         ...tasks
     ], {stdio: "inherit"}).on("exit", resolve)
 ));
