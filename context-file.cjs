@@ -24,6 +24,6 @@ const getLogEnvName = module.exports.getLongEnvName = () => {
   return process.env["NODE_ENV"] || process.env["APP_ENV"] || undefined;
 }
 
-const getShortEnvName = module.exports.getShortEnvName = () => {
+const getEnvName = module.exports.getEnvName = () => {
   return process.env["NODE_SENV"] || process.env["APP_SENV"] || undefined;
 }
