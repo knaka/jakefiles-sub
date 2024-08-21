@@ -7,4 +7,4 @@ case "$base_name" in
   task-*) APP_ENV="${base_name#task-}" ;;
 esac
 export APP_ENV
-exec node "$(dirname "$(readlink -f "$0")")"/task.js "$@"
+exec node "$(dirname "$(readlink -f "$0")")"/task.mjs "$@"

@@ -11,6 +11,6 @@ if "%base_name:~0,5%"=="task-" (
 )
 
 set "script_dir=%~dp0"
-set "script_path=%script_dir:~0,-1%\task.js"
+set "script_path=%script_dir:~0,-1%\task.mjs"
 
 node "%script_path%" %*
