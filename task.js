@@ -2,38 +2,43 @@ import { existsSync } from "fs";
 import { spawn } from "child_process";
 import { join, parse } from 'path';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const rootDir = parse(process.cwd()).root;
 while (! existsSync("package.json")) {
-    if (process.cwd() === rootDir) {
-        console.error("NPM root directory not found.");
-        process.exit(1);
-    }
-    process.chdir("..");
+  if (process.cwd() === rootDir) {
+    console.error("NPM root directory not found.");
+    process.exit(1);
+  }
+  process.chdir("..");
 }
 
 if (! process.env.APP_ENV) {
-    process.env.APP_ENV = "undefined";
+  process.env.APP_ENV = "undefined";
 }
 
 switch (process.env.APP_SENV || process.env.APP_ENV) {
-    case "dev":
-    case "development":
-        process.env.APP_SENV = "dev";
-        process.env.APP_ENV = "development";
-        break;
-    case "stg":
-    case "staging":
-        process.env.APP_SENV = "stg";
-        process.env.APP_ENV = "staging";
-        break;
-    case "prd":
-    case "production":
-        process.env.APP_SENV = "prd";
-        process.env.APP_ENV = "production";
-        break;
-    default:
-        process.env.APP_SENV = process.env.APP_ENV = (process.env.APP_SENV || process.env.APP_ENV);
-        break;
+  case "dev":
+  case "development":
+    process.env.APP_SENV = "dev";
+    process.env.APP_ENV = "development";
+    break;
+  case "stg":
+  case "staging":
+    process.env.APP_SENV = "stg";
+    process.env.APP_ENV = "staging";
+    break;
+  case "prd":
+  case "production":
+    process.env.APP_SENV = "prd";
+    process.env.APP_ENV = "production";
+    break;
+  default:
+    process.env.APP_SENV = process.env.APP_ENV = (process.env.APP_SENV || process.env.APP_ENV);
+    break;
 }
 
 const tasks = process.argv.slice(2);
@@ -42,14 +47,14 @@ const tasks = process.argv.slice(2);
 
 const packageName = "jake";
 try {
-    await import(packageName);
+  await import(packageName);
 } catch {
-    if (await new Promise(resolve =>
-        spawn("npm", ["install"], {stdio: "inherit"}).on("exit", resolve)
-    ) !== 0) {
-        throw new Error();
-    }
-    await import(packageName);
+  if (await new Promise(resolve =>
+    spawn("npm", ["install"], {stdio: "inherit"}).on("exit", resolve)
+  ) !== 0) {
+    throw new Error();
+  }
+  await import(packageName);
 }
 
 // Then run the tasks.
@@ -58,10 +63,10 @@ try {
 const quiet_options = process.stdout.isTTY ? [] : ["--quiet"];
 
 process.exit(await new Promise(resolve =>
-    spawn("npx", [
-        "jake",
-        ...quiet_options,
-        "--jakefile", join("jakelib", "sub", "bootstrap.cjs"),
-        ...tasks
-    ], {stdio: "inherit"}).on("exit", resolve)
+  spawn("npx", [
+    "jake",
+    ...quiet_options,
+    "--jakefile", join(__dirname, "task-bootstrap.cjs"),
+    ...tasks
+  ], {stdio: "inherit"}).on("exit", resolve)
 ));
