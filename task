@@ -1,10 +1,10 @@
 #!/bin/bash
 set -o nounset -o errexit -o pipefail
 
-APP_ENV="${APP_ENV:-unknown}"
+NODE_SENV="${APP_ENV:-default}"
 base_name="$(basename "$0")"
 case "$base_name" in
-  task-*) APP_ENV="${base_name#task-}" ;;
+  task-*) NODE_SENV="${base_name#task-}" ;;
 esac
-export APP_ENV
+export NODE_SENV
 exec node "$(dirname "$(readlink -f "$0")")"/task.mjs "$@"

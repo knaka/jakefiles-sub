@@ -2,12 +2,12 @@
 setlocal enabledelayedexpansion
 
 if "%APP_ENV%"=="" (
-    set "APP_ENV=unknown"
+    set "NODE_SENV=default"
 )
 
 set "base_name=%~nx0"
 if "%base_name:~0,5%"=="task-" (
-    set "APP_ENV=%base_name:5%"
+    set "NODE_SENV=%base_name:5%"
 )
 
 set "script_dir=%~dp0"
