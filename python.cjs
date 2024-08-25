@@ -22,23 +22,14 @@ module.exports.asyncRunPython = async (args, cwd, env = undefined, opts = {}) =>
       default: throw new Error("Unsupported architecture");
     }
     sh.mkdir("-p", binDir);
-    console.error(`https://github.com/astral-sh/rye/releases/download/${ver}/rye-${rsarch}-${rsos}.gz`);
     const res = await fetch(`https://github.com/astral-sh/rye/releases/download/${ver}/rye-${rsarch}-${rsos}.gz`, {
       redirect: "follow",
     })
-    console.error(res);
-    const zlib = require("zlib");
-    const fs = require("fs");
-    const gunzip = zlib.createGunzip();
-    const { Readable } = require( "stream" );
-    await new Promise(resolve => {
-      Readable.fromWeb(res.body)
-        .pipe(gunzip)
-        .pipe(fs.createWriteStream(cmdPath))
-        .on("finish", () => {   
-          resolve();
-        });
-    });
+    await require("stream/promises").pipeline(
+      require("stream").Readable.fromWeb(res.body),
+      require("zlib").createGunzip(),
+      require("fs").createWriteStream(cmdPath)
+    );
     sh.chmod("+x", cmdPath);
   }
   return await asyncRun([cmdPath, "run", ...args], cwd, env, opts);

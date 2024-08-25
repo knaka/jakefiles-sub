@@ -39,4 +39,4 @@ module.exports.asyncTerraform = async (args, cwd, env = undefined, opts = {}) =>
     sh.chmod("+x", cmdPath);
   }
   return await asyncRun([cmdPath, ...args], cwd, env, opts);
-}
+};

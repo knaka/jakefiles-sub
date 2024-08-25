@@ -43,7 +43,7 @@ const asyncGetObjectStorageNamespace = memoize(async () => {
  * @param {string} stackName
  * @param [{}] opts
  */
-module.exports.asyncTerraform = async (args, moduleName = undefined, opts = {}) => {
+const asyncTerraform = module.exports.asyncTerraform = async (args, moduleName = undefined, opts = {}) => {
   const path = require("path");
   const cwd = path.join(process.cwd(), "terraform");
   const env = { ...process.env };
@@ -140,4 +140,10 @@ module.exports.asyncBastionForwardPort = async (bastionId, instanceId, callback)
   } finally {
     await client.deleteSession({ sessionId });
   }
+}
+
+module.exports.asyncTerraformState = async () => {
+  return JSON.parse(
+    await asyncTerraform(["state", "pull"], undefined, { input: "" })
+  );
 }
