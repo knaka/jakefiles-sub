@@ -1,9 +1,9 @@
 const fs = require("fs");
 const path = require("path");
-const jakelibDir = path.join(__dirname, "..");
+const jakelibDir = path.join(process.cwd(), "jakelib");
 
 // Load the main tasks file.
-require(path.join(jakelibDir, "..", "jakefile.cjs"));
+require(path.join(process.cwd(), "jakefile.cjs"));
 
 // Load the task files.
 const files = fs.readdirSync(jakelibDir).filter(file => file.endsWith(".cjs"));

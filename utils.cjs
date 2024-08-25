@@ -37,3 +37,19 @@ module.exports.asyncRun = async (args, cwd, env, opts) => {
     }
   });
 }
+
+module.exports.jsonExtract = (tfState, exact, regex) => {
+  let conditions = "";
+  let delim = "";
+  for (const [key, value] of Object.entries(exact)) {
+    conditions += `${delim}@["${key}"] == "${value}"`;
+    delim = " && ";
+  }
+  for (const [key, value] of Object.entries(regex)) {
+    conditions += `${delim}/${value}/.test(@["${key}"])`;
+    delim = " && ";
+  }
+  const query = `$..[?(${conditions})]`;
+  const jsonpath = require("jsonpath");
+  return jsonpath.query(tfState, query)[0];
+}

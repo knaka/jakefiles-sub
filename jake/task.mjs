@@ -62,7 +62,7 @@ process.exit(await new Promise(resolve =>
   spawn("npx", [
     "jake",
     ...quiet_options,
-    "--jakefile", join(__dirname, "task-bootstrap.cjs"),
+    "--jakefile", join(__dirname, "bootstrap.cjs"),
     ...tasks
   ], {stdio: "inherit"}).on("exit", resolve)
 ));

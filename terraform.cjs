@@ -5,7 +5,7 @@
  * @param  {string | URL | undefined} cwd
  * @param  {NodeJS.ProcessEnv | undefined} env 
  */
-module.exports.asyncTerraformSub = async (args, cwd, env = undefined, opts = {}) => {
+module.exports.asyncTerraform = async (args, cwd, env = undefined, opts = {}) => {
   // Install | Terraform | HashiCorp Developer https://developer.hashicorp.com/terraform/install
   const ver = "1.9.5"
 

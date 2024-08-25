@@ -2,11 +2,11 @@ const path = require("path");
 const fs = require("fs");
 const { memoize } = require("lodash");
 
-const getConfJson = memoize((filePath) => JSON.parse(fs.readFileSync(filePath)));
+module.exports.getConfJson = memoize((filePath) => JSON.parse(fs.readFileSync(filePath)));
 
-const getProjectName = (filePath) => getConfJson(filePath)["context"]["project-name"];
+module.exports.getProjectName = (filePath) => getConfJson(filePath)["context"]["project-name"];
 
-const getContextValue = module.exports.getContextValue = (filePath, key, accountNames) => {
+module.exports.getContextValue = (filePath, key, accountNames) => {
   let value = getConfJson(filePath)["context"][key];
   for (const accountName of accountNames) {
     if (
@@ -22,10 +22,7 @@ const getContextValue = module.exports.getContextValue = (filePath, key, account
 
 const { getLogEnvName, getShortEnvName } = require("./env.cjs");
 
-modules.exports = {
-  getConfJson,
-  getProjectName,
-  getContextValue,
+module.exports = {
   getLogEnvName,
   getShortEnvName,
 }
