@@ -1,4 +1,4 @@
-const cleanup = function (fn) {
+module.exports.cleanup = (fn) => {
   ["exit", "SIGINT", "SIGUSR1", "SIGUSR2", "uncaughtException", "SIGTERM"].forEach((eventType) => {
     process.once(eventType, () => {
       try { fn(); } catch (e) {}
@@ -6,16 +6,13 @@ const cleanup = function (fn) {
   });
 }
 
-module.exports = {
-  cleanup,
-}
 /**
  * @param {string[]} args
  * @param {string | URL | undefined} cwd
  * @param {NodeJS.ProcessEnv | undefined} env
  */
 
-async function asyncRun(args, cwd, env, opts) {
+module.exports.asyncRun = async (args, cwd, env, opts) => {
   const spawnOpts = { cwd, env };
   if (!opts.input && opts.input !== "") {
     spawnOpts.stdio = "inherit";
@@ -40,4 +37,3 @@ async function asyncRun(args, cwd, env, opts) {
     }
   });
 }
-exports.asyncRun = asyncRun;
