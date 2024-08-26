@@ -142,8 +142,8 @@ module.exports.asyncBastionForwardPort = async (bastionId, instanceId, callback)
   }
 }
 
-module.exports.asyncTerraformState = async () => {
+module.exports.asyncTerraformState = memoize(async () => {
   return JSON.parse(
     await asyncTerraform(["state", "pull"], undefined, { input: "" })
   );
-}
+});

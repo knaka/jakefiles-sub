@@ -1,4 +1,4 @@
-const asyncSsh = async (host, user, privKey, port = 22) => {
+module.exports.asyncSsh = async (host, user, privKey, port = 22) => {
   const sh = require("shelljs");
   const fs = require("fs")
   const tmpdir = fs.mkdtempSync("/tmp/foo");
@@ -53,7 +53,7 @@ const asyncSsh = async (host, user, privKey, port = 22) => {
   }
 };
 
-const asyncSshForwardPort = async (
+module.exports.asyncSshForwardPort = async (
   fwdHost,
   fwdPort, 
   fwdUser, 
@@ -80,7 +80,3 @@ const asyncSshForwardPort = async (
   return [sshConnection, localPort];
 };
 
-module.exports = {
-  asyncSsh,
-  asyncSshForwardPort,
-};

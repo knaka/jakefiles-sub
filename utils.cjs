@@ -1,4 +1,4 @@
-module.exports.cleanup = (fn) => {
+exports.cleanup = (fn) => {
   ["exit", "SIGINT", "SIGUSR1", "SIGUSR2", "uncaughtException", "SIGTERM"].forEach((eventType) => {
     process.once(eventType, () => {
       try { fn(); } catch (e) {}
@@ -12,7 +12,7 @@ module.exports.cleanup = (fn) => {
  * @param {NodeJS.ProcessEnv | undefined} env
  */
 
-module.exports.asyncRun = async (args, cwd, env, opts) => {
+exports.asyncRun = async (args, cwd, env, opts) => {
   const spawnOpts = { cwd, env };
   if (!opts.input && opts.input !== "") {
     spawnOpts.stdio = "inherit";
@@ -38,15 +38,18 @@ module.exports.asyncRun = async (args, cwd, env, opts) => {
   });
 }
 
-module.exports.jsonExtract = (tfState, exact, regex) => {
+exports.jsonExtract = (tfState, exacts, regexes) => {
   let conditions = "";
   let delim = "";
-  for (const [key, value] of Object.entries(exact)) {
+  for (const [key, value] of Object.entries(exacts)) {
     conditions += `${delim}@["${key}"] == "${value}"`;
     delim = " && ";
   }
-  for (const [key, value] of Object.entries(regex)) {
-    conditions += `${delim}/${value}/.test(@["${key}"])`;
+  for (const [key, value] of Object.entries(regexes)) {
+    if (! (value instanceof RegExp)) {
+      throw new Error("Value must be a RegExp");
+    }
+    conditions += `${delim}${value.toString()}.test(@["${key}"])`;
     delim = " && ";
   }
   const query = `$..[?(${conditions})]`;
