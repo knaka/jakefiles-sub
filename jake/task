@@ -7,15 +7,16 @@ case "$base_name" in
   task-*) NODE_SENV="${base_name#task-}" ;;
 esac
 export NODE_SENV
-if type volta >/dev/null 2>&1
+if type volta > /dev/null 2>&1
 then
-  volta="$(type -p volta)"
+  cmd_path="$(type -p volta)"
 else
   # Releases · volta-cli/volta https://github.com/volta-cli/volta/releases
+  cmd_base=volta
   ver=2.0.1
+
   bin_dir="$PWD"/.bin
-  cmd_name=volta
-  cmd_path="$bin_dir/${cmd_name}@${ver}"
+  cmd_path="$bin_dir/${cmd_base}@${ver}"
   if ! test -x "$cmd_path"
   then
     case "$(uname -s)" in
@@ -23,11 +24,15 @@ else
       Darwin*) os=macos;;
       *) exit 1;;
     esac
-    url=https://github.com/volta-cli/volta/releases/download/v${ver}/volta-${ver}-${os}.tar.gz
-    curl --location "$url" | tar -xz --directory="$bin_dir" "volta"
-    mv "$bin_dir/volta" "$cmd_path"
+    case "$(uname -m)" in
+      x86_64) osArch="$os";;
+      arm64) osArch="${os}-arm";;
+      *) exit 1;;
+    esac
+    url=https://github.com/volta-cli/volta/releases/download/v${ver}/volta-${ver}-${osArch}.tar.gz
+    curl --location "$url" | tar -xz --directory="$bin_dir" $cmd_base
+    mv "$bin_dir/$cmd_base" "$cmd_path"
     chmod +x "$cmd_path"
   fi
-  volta="$cmd_path"
 fi
-exec "$volta" run node -- "$(dirname "$(readlink -f "$0")")"/task.mjs "$@"
+exec "$cmd_path" run node -- "$(dirname "$(readlink -f "$0")")"/task.mjs "$@"

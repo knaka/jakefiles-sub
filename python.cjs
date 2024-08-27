@@ -1,36 +1,43 @@
+const { memoize } = require("lodash");
+
+const rustArch = memoize(() => {
+  switch (process.arch) {
+    case "arm64": return "aarch64";
+    case "x64": return "x86_64";
+    default: throw new Error("Unsupported architecture");
+  }
+});
+
+const rustOs = memoize(() => {
+  switch (process.platform) {
+    case "linux": return "linux";
+    case "darwin": return "macos";
+    case "win32": return "windows";
+    default: throw new Error("Unsupported platform");
+  }
+});
+
 module.exports.asyncRunPython = async (args, cwd, env = undefined, opts = {}) => {
   // Releases · astral-sh/rye https://github.com/astral-sh/rye/releases
+  const cmdBase = "rye"
   ver = "0.39.0"
-  const { join } = require("path");
-  const { asyncRun } = require("./utils.cjs");
 
+  const path = require("path");
   const sh = require("shelljs");
-  const cmdName = "rye"
-  const binDir = join(process.cwd(), ".bin")
-  const cmdNameVer = `${cmdName}@${ver}`
-  const cmdPath = join(binDir, cmdNameVer)
+  const binDirPath = path.join(process.cwd(), ".bin")
+  const cmdPath = path.join(binDirPath, `${cmdBase}@${ver}`)
   if (! sh.test("-e", cmdPath)) {
-    switch (process.platform) {
-      case "linux": rsos = "linux"; break;
-      case "darwin": rsos = "macos"; break;
-      case "win32": rsos = "windows"; break;
-      default: throw new Error("Unsupported platform");
-    }
-    switch (process.arch) {
-      case "arm64": rsarch = "aarch64"; break;
-      case "x64": rsarch = "x86_64"; break;
-      default: throw new Error("Unsupported architecture");
-    }
-    sh.mkdir("-p", binDir);
-    const res = await fetch(`https://github.com/astral-sh/rye/releases/download/${ver}/rye-${rsarch}-${rsos}.gz`, {
+    sh.mkdir("-p", binDirPath);
+    const resp = await fetch(`https://github.com/astral-sh/rye/releases/download/${ver}/rye-${rustArch()}-${rustOs()}.gz`, {
       redirect: "follow",
     })
     await require("stream/promises").pipeline(
-      require("stream").Readable.fromWeb(res.body),
+      require("stream").Readable.fromWeb(resp.body),
       require("zlib").createGunzip(),
       require("fs").createWriteStream(cmdPath)
     );
     sh.chmod("+x", cmdPath);
   }
+  const { asyncRun } = require("./utils.cjs");
   return await asyncRun([cmdPath, "run", ...args], cwd, env, opts);
 }
