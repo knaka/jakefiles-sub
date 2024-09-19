@@ -25,7 +25,7 @@ exports.asyncRun = async (args, cwd, env, opts) => {
     }
     child.on("close", (code) => {
       if (code !== 0) {
-        throw new Error(`Command failed with code ${code}`);
+        throw new Error(`Command ${args} failed with code ${code}`);
       }
       resolve(output);
     });
