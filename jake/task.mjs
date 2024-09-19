@@ -16,26 +16,8 @@ while (! existsSync("package.json")) {
   process.chdir("..");
 }
 
-switch (process.env.NODE_SENV) {
-  case "dev":
-    process.env.NODE_ENV = "development";
-    break;
-  case "prd":
-    process.env.NODE_ENV = "production";
-    break;
-  default:
-    switch (process.env.NODE_ENV) {
-      case "development":
-        process.env.NODE_SENV = "dev";
-        break;
-      case "production":
-        process.env.NODE_SENV = "prd";
-        break;
-      default:
-        ;
-    }
-    break;
-}
+process.env.NODE_ENV = process.env.APP_ENV;
+process.env.NODE_SENV = process.env.APP_SENV;
 
 const tasks = process.argv.slice(2);
 

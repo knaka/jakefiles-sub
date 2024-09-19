@@ -26,3 +26,13 @@ if (!Task["default"]) {
     run.apply(global.jake, ["--tasks"]);
   });  
 }
+
+desc("Display the tasks");
+task("tasks", () => {
+  const originalConsoleLog = console.log;
+  console.log = function(...args) {
+      originalConsoleLog((args.join(" ")).replace(/^jake[[ \t]*/, "").replace(/#/, " "));
+  };
+  const { run } = require("jake");
+  run.apply(global.jake, ["--tasks"]);
+});
