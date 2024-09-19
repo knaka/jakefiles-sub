@@ -56,3 +56,16 @@ exports.jsonExtract = (tfState, exacts, regexes) => {
   const jsonpath = require("jsonpath");
   return jsonpath.query(tfState, query)[0];
 }
+
+const json2sh = exports.json2sh = (obj, prefix = "json__") => {
+  let result = "";
+  for (const key in obj) {
+    const keyForShell = key.replace(/[-\.]/g, "_");
+    if (typeof obj[key] === "object") {
+      result += json2sh(obj[key], `${prefix}${keyForShell}__`);
+    } else {
+      result += `${prefix}${keyForShell}="${obj[key]}"\n`;
+    }
+  }
+  return result;
+};
